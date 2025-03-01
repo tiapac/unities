@@ -3,6 +3,37 @@ from sys import stdout
 
 
 class quantity:
+    """
+    A class to represent a physical quantity with a value and units.
+    Attributes
+    ----------
+    value : tuple
+        A tuple containing the value and the unit of the quantity.
+    Methods
+    -------
+    __init__(value: tuple):
+        Initializes the quantity with a value and units.
+    __repr__():
+        Returns the string representation of the quantity.
+    __str__():
+        Returns the formatted string representation of the quantity.
+    __mul__(other):
+        Multiplies the quantity with another quantity, float, int, or symbol.
+    __truediv__(other):
+        Divides the quantity by another quantity.
+    __pow__(other):
+        Raises the quantity to the power of another quantity or value.
+    quantify(value, unit):
+        Static method to create a new quantity with a given value and unit.
+    value:
+        Returns the value of the quantity.
+    v:
+        Returns the value of the quantity (alias for value).
+    units:
+        Returns the units of the quantity.
+    u:
+        Returns the units of the quantity (alias for units).
+    """
     def __init__(self, value:tuple):
         self._value = value[0]
         self._units = symbols(value[1])

@@ -1,6 +1,51 @@
 from fractions import Fraction
 
 class symbol:
+    """
+    A class to represent mathematical symbols with base and exponent.
+    Attributes
+    ----------
+    power : str
+        Symbol for power operation.
+    plus : str
+        Symbol for addition operation.
+    minus : str
+        Symbol for subtraction operation.
+    mult : str
+        Symbol for multiplication operation.
+    space : str
+        Symbol for space.
+    Methods
+    -------
+    __init__(string, subsymbols=set):
+        Initializes the symbol with a string and optional subsymbols.
+    __tofloat(value):
+        Converts a string value to a float, handling fractions.
+    string():
+        Returns the string representation of the symbol.
+    base():
+        Returns the base part of the symbol.
+    exp():
+        Returns the exponent part of the symbol.
+    __base(string):
+        Extracts the base from the string representation of the symbol.
+    __exp(string):
+        Extracts the exponent from the string representation of the symbol.
+    __str__():
+        Returns the string representation of the symbol.
+    __repr__():
+        Returns the string representation of the symbol.
+    __eq__(other):
+        Checks if two symbols are equal.
+    __pow__(other):
+        Raises the symbol to the power of another value.
+    __mul__(other):
+        Multiplies the symbol with another symbol or string.
+    __truediv__(other):
+        Divides the symbol by another symbol.
+    __hash__():
+        Returns the hash of the symbol.
+    """
     power = "^"
     plus  = "+"
     minus = "-"
@@ -121,6 +166,31 @@ class symbol:
 
 
 class symbols: 
+    """
+    A class to represent a collection of symbols.
+    Attributes
+    ----------
+    symbols : list
+        A list of symbol objects.
+    Methods
+    -------
+    __init__(*args):
+        Initializes the symbols object with given arguments.
+    __repr__():
+        Returns the string representation of the symbols object.
+    __str__():
+        Returns the string representation of the symbols object.
+    __pow__(other):
+        Raises each symbol in the collection to the power of an integer.
+    __contains__(item):
+        Checks if a symbol is in the collection.
+    __iter__():
+        Returns an iterator for the symbols collection.
+    __truediv__(other):
+        Divides the symbols collection by another symbols collection.
+    __mul__(other):
+        Multiplies the symbols collection by another symbols collection or a single symbol.
+    """
     def __init__(self, *args):
         done = False
         for arg in args: 
