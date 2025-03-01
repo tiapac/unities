@@ -116,28 +116,31 @@ class symbol:
     
     def __pow__(self, other):
     
-        if isinstance(other, int|str|float|Fraction):
-            try:
-                other = float(other)
-            except:
+        match other:
+            case int()|str()|float()|Fraction():
                 try:
-                    other = Fraction(other)
-                except Exception as e:
-                    
-                    raise TypeError("Exponent must be an integer or a fraction:", e)
-            match other:
-                case 1|1.0:
-                    return self
-                case 0|0.0: 
-                    return symbol("")
-                case _: 
-                    
-                    exp = str(Fraction(float(self.__tofloat(self.exp))*other))
-                    if exp == 1 or exp == 0: 
-                        return self**exp
-                    else:
-                        return symbol(self.base+symbol.power+exp)
-                    
+                    other = float(other)
+                except:
+                    try:
+                        other = Fraction(other)
+                    except Exception as e:
+                        
+                        raise TypeError("Exponent must be an integer or a fraction:", e)
+                match other:
+                    case 1|1.0:
+                        return self
+                    case 0|0.0: 
+                        return symbol("")
+                    case _: 
+                        
+                        exp = str(Fraction(float(self.__tofloat(self.exp))*other))
+                        if exp == 1 or exp == 0: 
+                            return self**exp
+                        else:
+                            return symbol(self.base+symbol.power+exp)
+            case _:
+                raise TypeError("Operation with unkown type {value}. Must be float|int or quantity.")
+              
 
 
 
@@ -210,17 +213,31 @@ class symbols:
         return self.__str__()
     def __str__(self):
         return "".join([str(sym)+sym.space for sym in self.symbols]).strip(symbol.space)
-    def __pow__(self, other):
+    
+    def __pow__(self, other):    
+        match other:
+            case float() | int() | Fraction()|str():
+                
+                return symbols(*(sym**other for sym in self.symbols))
+            case _:
+                raise TypeError("You can only raise symbols to an integer power")
         
-        if isinstance(other, int):            
-            return symbols(*(sym**other for sym in self.symbols))
-        else:
-            raise TypeError("You can only raise symbols to an integer power")
     def __contains__(self, item):
-        if isinstance(item, symbol):
-            return any([item == sym for sym in self.symbols])
+        match item:
+            case symbol():
+                return any([item == sym for sym in self.symbols])
+            case symbols():
+                return all([ itemsym in self.symbols for itemsym in item ])
+            case _:
+                raise TypeError("You can only check containment with symbols")
+                        
+    def __eq__(self, other):
+        if isinstance(other, symbols):
+            
+            return all([sym in other.symbols for sym in self.symbols])#(self.base == other.base) and (self.exp == other.exp)
         else:
-            raise TypeError("You can only check containment with symbols")
+            raise TypeError("You can only compare symbols with symbols")
+        pass
 
     def __iter__(self):
         return iter(self.symbols)

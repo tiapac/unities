@@ -1,7 +1,13 @@
 
 
 if __name__ == "__main__":
-    import unities as u 
+    try:
+        import unities as u
+    except:
+            import sys
+            import os
+            sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+            import unities as u
     import matplotlib.pyplot as plt
     from matplotlib.backends.backend_pdf import PdfPages
     
@@ -11,21 +17,20 @@ if __name__ == "__main__":
     velocity = cm*(s**-1)
     force    = u.symbols("dyne")#,  subsymbols= {g, cm,s**-2})
     pressure = force*(cm**-2)
+    v1 = u.quantity((2, velocity))
+    v2 = u.quantity((40., velocity))
     
     foo = pressure*velocity
     # print("".join(["%s %s\n"%(type(x), x) for x in [cm, g, s, vel, force, pressure, foo, fluxx]]))
     
-    v1 = u.quantity((1, velocity))
-    v2 = u.quantity((40, velocity))
     
-    sts = v1*10.
-    sts = v2/4. 
-    sts = v2**-1
-    sts = v2**2 
-    sts = v1*v2 
-    sts = v1*cm 
-
-    
+    # sts = v1*10.
+    # sts = v2/4. 
+    # sts = v2**-1
+    # sts = v2**2 
+    # sts = v1*v2 
+    # sts = v1*cm 
+    #print(v2+g)
     pltArgs  = dict(fontsize=12, ha='center')
 
     with PdfPages('symbols.pdf') as pdf:
@@ -42,12 +47,13 @@ if __name__ == "__main__":
         ax.text(0.7, 0.9, f"This is a number, with a value \n and a unit:  ${velocity}$" )
         ax.text(0.7, 0.8, f"but also:  ${v1}$" )
         ax.text(0.7, 0.7, f"and also:  ${v2}$" )
-        ax.text(0.7, 0.6, f"multiply by 10\n ${v1*10.}$")
-        ax.text(0.7, 0.5, f"divide with slash\n ${v2/4.} $")
-        ax.text(0.7, 0.4, f"test power of negative number:\n ${v2**-1}$")
-        ax.text(0.7, 0.3, f"test power of positive number:\n ${v2**2} $")
-        ax.text(0.7, 0.2, f"test multiplication ${v1*v2} $")
-        ax.text(0.7, 0.1, f"test multiplocation with just unit ${v1*cm} $")
+        ax.text(0.7, 0.6, f"multiply by 10: ${v1*10.}$")
+        ax.text(0.7, 0.5, f"divide with slash: ${v2/4.} $")
+        ax.text(0.7, 0.4, f"test power of negative number:    ${v2**-1}$")
+        ax.text(0.7, 0.3, f"test power of positive number:    ${v2**2} $")
+        ax.text(0.7, 0.2, f"test multiplication ${v1*v2}$, sum  ${v1+v2}$")
+        ax.text(0.7, 0.1, f" sub ${v1-v2}$, power or quantities ${v2**v1}$")
+        ax.text(0.7, 0.0, f"test multiplocation with just unit  ${v1*cm} $")
 
         
         ax.axis('off')
