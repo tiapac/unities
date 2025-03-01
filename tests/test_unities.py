@@ -18,12 +18,6 @@ if __name__ == "__main__":
     v1 = u.quantity((1, velocity))
     v2 = u.quantity((40, velocity))
     
-    print(v1*10.)
-    print(v2/4. )
-    print(v2**-1)
-    print(v2**2 )
-    print(v1*v2 )
-    print(v1*cm )
     sts = v1*10.
     sts = v2/4. 
     sts = v2**-1
@@ -45,10 +39,9 @@ if __name__ == "__main__":
         ax.text(0.1, 0.2, f"Force units is ${force}$"   )
         ax.text(0.1, 0.1, f"Foo is ${foo}$"   )
         
-        ax.text(0.7, 0.9, f"This is a number, with a value \n and a unit:  ${velocity}$!" )
-        ax.text(0.7, 0.8, f"but also:  ${v1}$!" )
-        ax.text(0.7, 0.7, f"and also:  ${v2}$!" )
-        
+        ax.text(0.7, 0.9, f"This is a number, with a value \n and a unit:  ${velocity}$" )
+        ax.text(0.7, 0.8, f"but also:  ${v1}$" )
+        ax.text(0.7, 0.7, f"and also:  ${v2}$" )
         ax.text(0.7, 0.6, f"multiply by 10\n ${v1*10.}$")
         ax.text(0.7, 0.5, f"divide with slash\n ${v2/4.} $")
         ax.text(0.7, 0.4, f"test power of negative number:\n ${v2**-1}$")
