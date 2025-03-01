@@ -57,6 +57,6 @@ if __name__ == "__main__":
 
         
         ax.axis('off')
-        #pdf.savefig(fig)
+        pdf.savefig(fig)
         plt.show()
     plt.close()
