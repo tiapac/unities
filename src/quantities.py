@@ -42,9 +42,9 @@ class quantity:
         return self.__str__()
     def __str__(self):
         if False:#stdout.isatty():
-            return f"{self.v} [{str(self.u).replace(r'\,', ' ').replace('{', '(').replace('}', ')')}]"
+            return f"{self.v} {str(self.u).replace(r'\,', ' ').replace('{', '(').replace('}', ')')}"
         else:
-            return rf"{self.v}\,[{str(self.u)}]"
+            return rf"${self.v}\,${str(self.u)}"
             
     def __mul__(self, other):
         match other:

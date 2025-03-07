@@ -165,7 +165,7 @@ class symbol:
     def __hash__(self):
         return hash((self.base, self.exp))
 
-
+emptysymbol= symbol("")
 
 
 class symbols: 
@@ -211,9 +211,14 @@ class symbols:
         pass
     def __repr__(self):
         return self.__str__()
+    @staticmethod
+    def __inBracket(string): 
+        return r"$[\mathrm{%s}]$"%string
     def __str__(self):
-        return "".join([str(sym)+sym.space for sym in self.symbols]).strip(symbol.space)
-    
+        if all(sym==emptysymbol for sym in self.symbols): 
+            return ""
+        else:
+            return self.__inBracket("".join([str(sym)+sym.space for sym in self.symbols]).strip(symbol.space))
     def __pow__(self, other):    
         match other:
             case float() | int() | Fraction()|str():
