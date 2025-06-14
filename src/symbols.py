@@ -76,15 +76,13 @@ class symbol:
             res += self.power+"{%s}"%self.exp
         elif abs(self.__tofloat(self.exp))<1:
             res += self.power+"{%s}"%self.exp
-        else: 
-            match value:
-                case 1|1.0:
-                    pass
-                case -1|-1.0:
-                    res += self.power+"{%s}"%self.exp
-                case 0|0.0:
-                    res = "1"
-
+        else:
+            if value in (1, 1.0):
+                pass
+            elif value in (-1, -1.0):
+                res += self.power+"{%s}"%self.exp
+            elif value in (0, 0.0):
+                res = "1"
         return res
     @property
     def base(self):
@@ -115,31 +113,26 @@ class symbol:
         pass
     
     def __pow__(self, other):
-    
-        match other:
-            case int()|str()|float()|Fraction():
+        if isinstance(other, (int, str, float, Fraction)):
+            try:
+                other_float = float(other)
+            except:
                 try:
-                    other = float(other)
-                except:
-                    try:
-                        other = Fraction(other)
-                    except Exception as e:
-                        
-                        raise TypeError("Exponent must be an integer or a fraction:", e)
-                match other:
-                    case 1|1.0:
-                        return self
-                    case 0|0.0: 
-                        return symbol("")
-                    case _: 
-                        
-                        exp = str(Fraction(float(self.__tofloat(self.exp))*other))
-                        if exp == 1 or exp == 0: 
-                            return self**exp
-                        else:
-                            return symbol(self.base+symbol.power+exp)
-            case _:
-                raise TypeError("Operation with unkown type {value}. Must be float|int or quantity.")
+                    other_float = float(Fraction(other))
+                except Exception as e:
+                    raise TypeError("Exponent must be an integer or a fraction:", e)
+            if other_float in (1, 1.0):
+                return self
+            elif other_float in (0, 0.0):
+                return symbol("")
+            else:
+                exp = str(Fraction(float(self.__tofloat(self.exp))*other_float))
+                if exp == "1" or exp == "0": 
+                    return self**exp
+                else:
+                    return symbol(self.base+symbol.power+exp)
+        else:
+            raise TypeError("Operation with unkown type {value}. Must be float|int or quantity.")
               
 
 
@@ -220,21 +213,18 @@ class symbols:
         else:
             return self.__inBracket("".join([str(sym)+sym.space for sym in self.symbols]).strip(symbol.space))
     def __pow__(self, other):    
-        match other:
-            case float() | int() | Fraction()|str():
-                
-                return symbols(*(sym**other for sym in self.symbols))
-            case _:
-                raise TypeError("You can only raise symbols to an integer power")
+        if isinstance(other, (float, int, Fraction, str)):
+            return symbols(*(sym**other for sym in self.symbols))
+        else:
+            raise TypeError("You can only raise symbols to an integer power")
         
     def __contains__(self, item):
-        match item:
-            case symbol():
-                return any([item == sym for sym in self.symbols])
-            case symbols():
-                return all([ itemsym in self.symbols for itemsym in item ])
-            case _:
-                raise TypeError("You can only check containment with symbols")
+        if isinstance(item, symbol):
+            return any([item == sym for sym in self.symbols])
+        elif isinstance(item, symbols):
+            return all([ itemsym in self.symbols for itemsym in item ])
+        else:
+            raise TypeError("You can only check containment with symbols")
                         
     def __eq__(self, other):
         if isinstance(other, symbols):
@@ -274,5 +264,5 @@ class symbols:
             return symbols(*tmp)
         else:
             raise TypeError("You can only multiply symbols with symbols or symbols with symbols")
-    
+
 

@@ -41,35 +41,34 @@ class quantity:
     def __repr__(self):
         return self.__str__()
     def __str__(self):
-        if False:#stdout.isatty():
-            return f"{self.v} {str(self.u).replace(r'\,', ' ').replace('{', '(').replace('}', ')')}"
+        if False:  # stdout.isatty(): 
+            u_str = str(self.u).replace('\\,', ' ').replace('{', '(').replace('}', ')')
+            return f"{self.v} {u_str}"
         else:
             return rf"${self.v}\,${str(self.u)}"
             
     def __mul__(self, other):
-        match other:
-            case quantity():
-                return self.quantify(self.value * other.value, self.units * other.units)
-            case float() | int():
-                return self.quantify(self.value * other, self.units)
-            case symbols():
-                return self.quantify(self.value, self.units * other)
-            case _: 
-                raise TypeError(f"Operation with unkown type {other}. Must be float|int or quantity.")
+        if isinstance(other, quantity):
+            return self.quantify(self.value * other.value, self.units * other.units)
+        elif isinstance(other, (float, int)):
+            return self.quantify(self.value * other, self.units)
+        elif isinstance(other, symbols):
+            return self.quantify(self.value, self.units * other)
+        else:
+            raise TypeError(f"Operation with unkown type {other}. Must be float|int or quantity.")
 
     @staticmethod
     def quantify(value, unit):
         return quantity((value, symbols(unit)))
     
-    def __add__(self,other):
-        match other:
-            case float() | int():
-                return self.quantify(self.value + other, self.units)
-            case quantity():
-                assert self.units == other.units, "Cannot sum/sub numbers with different units of measure."
-                return self.quantify(self.value + other.value, self.units)
-            case _:
-                raise TypeError(f"Operation with unkown type {other}. Must be float|int or quantity.")
+    def __add__(self, other):
+        if isinstance(other, (float, int)):
+            return self.quantify(self.value + other, self.units)
+        elif isinstance(other, quantity):
+            assert self.units == other.units, "Cannot sum/sub numbers with different units of measure."
+            return self.quantify(self.value + other.value, self.units)
+        else:
+            raise TypeError(f"Operation with unkown type {other}. Must be float|int or quantity.")
     def __truediv__(self, other):
         return self.__mul__(other**(-1))
     def __neg__(self):
@@ -79,22 +78,18 @@ class quantity:
         return self.__add__(-other)
     
     def __pow__(self, other):
-        match other:
-            case float() | int() | quantity() | str() |Fraction():
-                if isinstance(other, str): 
-                    other = Fraction(other )
-                    other = other.numerator/other.denominator
-                
-                if isinstance(other, quantity):
-                    other_v   = other.value
-                    other_u   = other.value
-                else: 
-                    other_v = other
-                    other_u = 1
-                    
-                return self.quantify(self.value**other_v, self.units**other_u)
-            case _: 
-                raise TypeError(f"Operation with unkown type {other}. Must be float|int or quantity.")
+        if isinstance(other, (float, int, Fraction)) or (isinstance(other, str)):
+            if isinstance(other, str):
+                other = Fraction(other)
+                other = other.numerator / other.denominator
+            other_v = other
+            other_u = 1
+        elif isinstance(other, quantity):
+            other_v = other.value
+            other_u = other.value
+        else:
+            raise TypeError(f"Operation with unkown type {other}. Must be float|int or quantity.")
+        return self.quantify(self.value ** other_v, self.units ** other_u)
     @property
     def value(self):
         return self._value
